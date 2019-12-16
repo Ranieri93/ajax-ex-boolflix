@@ -10,25 +10,15 @@
 
 
 $(document).ready(function(){
-
-    // vado ad effettuare la chiamata ajax:
-    // definisco la variabile url:
-
-
-
-
-
-
-    //
     // l'evento del richiamo ajax sarà un keypress dell'inivio,
     $('#searchInput').keypress(function(event) {
         // mi vado a recuperare il value dell'input
         var inputValue = $('#searchInput').val();
         if(event.which == 13) {
             // Adesso devo cercare tramite la libreria api tutti i film che hanno una corrispondenza con il value inserito dall'utente:
-
+            // definisco la variabile url:
             var apiUrlBase = 'https://api.themoviedb.org/3/';
-
+            // vado ad effettuare la chiamata ajax:
             $.ajax({
                 'url': apiUrlBase + 'search/movie',
                 'data': {
@@ -39,25 +29,29 @@ $(document).ready(function(){
                     'dataType': 'jsonp'
                 },
                 'method': 'GET',
-                'success': function(data) {
-                    var film = data.results;
-                    for (var i = 0; i < film.length; i++) {
-                        var titoloFilm = film[i].title;
-                        console.log('titolo film: ' + titoloFilm);
-                        var titoloOriginale = film[i].original_title;
-                        console.log('titolo originale: ' + titoloOriginale);
-                        var linguaFilm = film[i].original_language;
-                        console.log('lingua originale: ' + linguaFilm);
-                        var votoFilm = film[i].vote_average;
-                        console.log('voto film: ' + votoFilm);
-                        $('.container').append('<ul><li> Titolo Film: ' + titoloFilm + '</li><li> Titolo Originale:' + titoloOriginale + '</li><li> Lingua Originale: ' + linguaFilm + '</li><li> Voto Critica: ' + votoFilm + '</li></ul>');
-                    }
+                'success': function (data) {
+                    getMyInfos(data);
                 },
                 'error': function() {
                     alert('error');
                 }
             });
-
+            // mi resetto il value per far scomparire il teso una volta cliccato invio:
+            var inputValue = $('#searchInput').val('');
         }
+
     });
+
+    // creo una funzione che mi permetta di generalizzare la ricerca:
+    function getMyInfos (array) {
+        var subject = array.results;
+        for (var i = 0; i < subject.length; i++) {
+            var titleSubject = subject[i].title;
+            var originalTitleSubject = subject[i].original_title;
+            var languegeSubject = subject[i].original_language;
+            var voteSubject = subject[i].vote_average;
+
+            $('.container').append('<ul><li> Titolo Film: ' + titleSubject + '</li><li> Titolo Originale:' + originalTitleSubject + '</li><li> Lingua Originale: ' + languegeSubject + '</li><li> Voto Critica: ' + voteSubject + '</li></ul>');
+        }
+    };
 });
