@@ -12,35 +12,45 @@
 $(document).ready(function(){
     // l'evento del richiamo ajax sarà un keypress dell'inivio,
     $('#searchInput').keypress(function(event) {
+        if(event.which == 13) {
+            $('.container').text('');
+            imdbApiCall();
+        }
+    });
+    // la stessa funzione la richiamo con il click:
+    $('#searchButton').click(function() {
+        $('.container').text('');
+        imdbApiCall();
+    })
+
+    // definisco una funzione per la chiamata API
+    function imdbApiCall () {
         // mi vado a recuperare il value dell'input
         var inputValue = $('#searchInput').val();
-        if(event.which == 13) {
-            // Adesso devo cercare tramite la libreria api tutti i film che hanno una corrispondenza con il value inserito dall'utente:
-            // definisco la variabile url:
-            var apiUrlBase = 'https://api.themoviedb.org/3/';
-            // vado ad effettuare la chiamata ajax:
-            $.ajax({
-                'url': apiUrlBase + 'search/movie',
-                'data': {
-                    'api_key': '08c1066e89bef9e87a45652373f1ec85',
-                    // sostituisco nel query il value dell'input:
-                    'query': inputValue,
-                    'language': 'it-IT',
-                    'dataType': 'jsonp'
-                },
-                'method': 'GET',
-                'success': function (data) {
-                    getMyInfos(data);
-                },
-                'error': function() {
-                    alert('error');
-                }
-            });
-            // mi resetto il value per far scomparire il teso una volta cliccato invio:
-            var inputValue = $('#searchInput').val('');
-        }
-
-    });
+        // Adesso devo cercare tramite la libreria api tutti i film che hanno una corrispondenza con il value inserito dall'utente:
+        // definisco la variabile url:
+        var apiUrlBase = 'https://api.themoviedb.org/3/';
+        // vado ad effettuare la chiamata ajax:
+        $.ajax({
+            'url': apiUrlBase + 'search/movie',
+            'data': {
+                'api_key': '08c1066e89bef9e87a45652373f1ec85',
+                // sostituisco nel query il value dell'input:
+                'query': inputValue,
+                'language': 'it-IT',
+                'dataType': 'jsonp'
+            },
+            'method': 'GET',
+            'success': function (data) {
+                getMyInfos(data);
+            },
+            'error': function() {
+                alert('error');
+            }
+        });
+        // mi resetto il value per far scomparire il teso una volta cliccato invio:
+        var inputValue = $('#searchInput').val('');
+    }
 
     // creo una funzione che mi permetta di generalizzare la ricerca:
     function getMyInfos (array) {
