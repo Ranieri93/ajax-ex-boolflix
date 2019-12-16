@@ -1,0 +1,56 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+ul {
+	list-style-type: none;
+	padding: 10px;
+}
+
+ul li {
+
+}
+
+/*  inizio header */
+
+header {
+	width: 100vw;
+	height: 80px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	background-color: black;
+}
+
+.left-side-header {
+
+}
+
+.righ-side-header input {
+	padding: 5px;
+}
+
+.righ-side-header button {
+	padding: 5px;
+	border-radius: 5px;
+}
+
+/* fine header */
+
+/* inizio body */
+
+main {
+	display: flex;
+}
+
+.container {
+	margin: auto;
+	width: 1200px;
+	height: 100vh;
+	background-color: orange;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
