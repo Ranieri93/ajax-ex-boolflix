@@ -8,7 +8,6 @@
 // 3. Lingua
 // 4. Voto
 
-
 $(document).ready(function(){
 
     // definisco la variabile url:
@@ -93,30 +92,37 @@ $(document).ready(function(){
         var subject = array.results;
         for (var i = 0; i < subject.length; i++) {
             var titleSubject = subject[i].title;
-
-            // if (titleSubject.length < 0) {
-            //     var titleSubject =subject[i].name;
-            // }
-
             var originalTitleSubject = subject[i].original_title;
-            var originalNameSubject = subject[i].original_name;
+
+            if (titleSubject.length > 0) {
+                var titleSubject = subject[i].title;
+            } else if (originalTitleSubject.lenght > 0) {
+                var originalTitleSubject = subject[i].original_title;
+            } else {
+                var titleSubject = subject[i].name;
+                var originalTitleSubject = subject[i].original_name;
+            }
+
+
+            // var originalNameSubject = subject[i].original_name;
             var languegeSubject = subject[i].original_language;
             var voteSubject = subject[i].vote_average;
             var posterSubject = subject[i].poster_path;
+            var overviewSubject = subject[i].overview;
             // creo il template per le variabili di handlebars:
             var templateVariables = {
                 posterImg: apiUrlImg + 'w342' + posterSubject,
-                title: '<strong>' + titleSubject + '</strong>',
-                name: originalNameSubject,
+                title: titleSubject,
+                // name: originalNameSubject,
                 originalTitle: originalTitleSubject,
-                originalName: originalNameSubject,
+                // originalName: originalNameSubject,
                 language: flagLanguage(languegeSubject),
-                vote: starVote(voteSubject)
+                vote: starVote(voteSubject),
+                overview: overviewSubject
             }
             // infine faccio append:
             var htmlFilm = template(templateVariables);
             $('.container').append(htmlFilm);
-
         }
     };
 
@@ -142,7 +148,6 @@ $(document).ready(function(){
 
     function flagLanguage (input) {
         //creo dei casi in cui al variare del valore dell'inpput, mi cambi anche la relativa icona:
-
         if (input == 'en') {
             return '<img src="https://icon-icons.com/icons2/97/PNG/32/united_kingdom_flags_flag_17079.png" alt="">'
         } else if (input == 'it') {
@@ -165,16 +170,14 @@ $(document).ready(function(){
     };
 
     // adesso devo gestire il l'hover sulle card con le foto:
-    $(document).on('click', '.card-film', function(){
-
+    // mi vado a intercettare l'evento sulle card
+    $(document).on('mouseover', '.card-film', function(){
+        // mi seleziono i soggetti corretti con cui lavorare
         var selectedPosterCard = $(this).children('img');
         var selectedTextCard = $(this).children('ul');
-
-        if (!selectedPosterCard.hasClass('active')) {
-            selectedPosterCard.addClass('active')
-            selectedTextCard.addClass('active')
-        }
-
+        // pongo le conzioni
+        selectedPosterCard.toggleClass('hidden')
+        selectedTextCard.toggleClass('active')
     });
 
 });

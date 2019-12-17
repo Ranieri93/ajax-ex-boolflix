@@ -58,7 +58,6 @@ main {
 
 .card-film {
 	padding: 10px;
-	border: 1px solid black;
 	width: 20%;
 	height: 350px;
 	margin-top: 15px;
@@ -71,7 +70,7 @@ main {
 	display: block;
 }
 
-#posterImg.active {
+#posterImg.hidden {
 	display: none;
 }
 
