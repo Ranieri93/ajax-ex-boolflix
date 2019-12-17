@@ -43,6 +43,9 @@ header {
 
 main {
 	display: flex;
+	background-color: lightgrey;
+	/* overflow-y: scroll; */
+
 }
 
 .container {
@@ -56,13 +59,37 @@ main {
 .card-film {
 	padding: 10px;
 	border: 1px solid black;
-	width: 15%;
+	width: 20%;
+	height: 350px;
+	margin-top: 15px;
+	display: flex;
+	justify-content: center;
+}
+
+#posterImg {
+	max-width: 100%;
+	display: block;
+}
+
+#posterImg.active {
+	display: none;
 }
 
 ul {
+	display: none;
 	list-style-type: none;
 }
 
-ul li {
+ul.active {
+	display: block;
+}
 
+
+
+.fas {
+	color: #e3af14;
+}
+
+.far {
+	color: #e3af14;
 }
