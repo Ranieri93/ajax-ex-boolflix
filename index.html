@@ -19,6 +19,13 @@
 				<input id="searchInput" placeholder="Cerca qui!" name="search">
 				<button id="searchButton" type="button" name="button"> Clicca qui!</button>
 			</div>
+			<!-- <select id="pickGenre">
+				<option value=""> Scegli un genere</option>
+				<option value="pop"> Pop </option>
+				<option value="rock"> Rock </option>
+				<option value="jazz"> Jazz </option>
+				<option value="metal"> Metal </option>
+			</select> -->
 		</header>
 		<main>
 			<div class="container"></div>
@@ -26,7 +33,7 @@
 
 		<script id="film-template" type="text/x-handlebars-template">
 			<div class="card-film">
-				<img id="posterImg" src="{{ posterImg }}" alt="">
+				<img id="posterImg" src="{{{ posterImg }}}" alt="">
 				<ul>
 					<li>Titolo: {{ title }} </li>
 					<li>Titolo Originale: {{ originalTitle }} </li>

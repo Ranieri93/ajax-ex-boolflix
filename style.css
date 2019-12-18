@@ -13,7 +13,7 @@
 /*  inizio header */
 
 header {
-	width: 100vw;
+	width: 100%;
 	height: 80px;
 	display: flex;
 	justify-content: space-around;
@@ -25,7 +25,7 @@ header {
 	text-transform: uppercase;
 	font-weight: bold;
 	color: red;
-	font-size: 20px;
+	font-size: 30px;
 }
 
 .righ-side-header input {
@@ -44,7 +44,7 @@ header {
 main {
 	display: flex;
 	background-color: lightgrey;
-	/* overflow-y: scroll; */
+	min-height: calc( 100vh - 80px);
 
 }
 
@@ -57,12 +57,17 @@ main {
 }
 
 .card-film {
-	padding: 10px;
+
 	width: 20%;
 	height: 350px;
-	margin-top: 15px;
+	margin-top: 25px;
+	margin-left: 2%;
 	display: flex;
 	justify-content: center;
+	box-shadow: 8px 8px 3px grey;
+	border: 1px solid black;
+	background-color: black;
+
 }
 
 #posterImg {
@@ -77,6 +82,10 @@ main {
 ul {
 	display: none;
 	list-style-type: none;
+	overflow-y: auto;
+	padding: 10px;
+	color: white;
+
 }
 
 ul.active {
@@ -85,10 +94,9 @@ ul.active {
 
 
 
-.fas {
-	color: #e3af14;
-}
 
-.far {
+
+
+.fa-star {
 	color: #e3af14;
 }
