@@ -32,14 +32,15 @@
 		</main>
 
 		<script id="film-template" type="text/x-handlebars-template">
-			<div class="card-film">
-				<img id="posterImg" src="{{{ posterImg }}}" alt="">
+			<div class="card-film" data-id="{{ id }}">
+				<img id="posterImg"  src="{{{ posterImg }}}" alt="Locandina {{ originalTitle }}">
 				<ul>
 					<li>Titolo: {{ title }} </li>
 					<li>Titolo Originale: {{ originalTitle }} </li>
 					<li>Lingua: {{{ language }}} </li>
 					<li>Vote: {{{ vote }}} </li>
 					<li>Overview: {{ overview }}</li>
+					<li>Cast: {{ actorName }}</li>
 				</ul>
 			</div>
 		</script>

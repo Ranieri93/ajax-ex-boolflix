@@ -39,30 +39,38 @@ $(document).ready(function(){
         if (inputValue.length != 0) {
             // svuoto prima il div e poi, tutto il resto:
             $('.container').empty();
-            tmdbApiCall(inputValue,'search','tv');
-            tmdbApiCall(inputValue,'search','movie');
+            tmdbApiCall(inputValue,'search/tv');
+            tmdbApiCall(inputValue,'search/movie');
             // tmdbApiCall(inputValue,'find','movie');
         };
         // mi resetto il value per far scomparire il teso una volta cliccato invio:
         var inputValue = $('#searchInput').val('');
     };
 
-    // tmdbApiCallGenre(query);
 
 
-    function tmdbApiCall (query, findingData, type) {
+    ///movie/{movie_id}/credits
+    function tmdbApiCall (query, endPoint) {
+
+        var dataAjax = {api_key:apiKey}
+
+        if (endPoint.includes('search')) {
+            dataAjax.query = query;
+            dataAjax.language = 'it-IT';
+        }
         // vado ad effettuare la chiamata ajax:
         $.ajax({
-            'url': apiUrlBase + findingData + '/' + type ,
-            'data': {
-                'api_key': apiKey,
-                // sostituisco nel query il value dell'input:
-                'query': query,
-                'language': 'it-IT'
-            },
+            'url': apiUrlBase + endPoint,
+            'data': dataAjax,
             'method': 'GET',
             'success': function (data) {
-                getMyInfosFromApi(data);
+                if (data.total_results > 0) {
+                    if (endPoint.includes('search')) {
+                        getMyInfosFromApi(data);
+                    } else {
+                        getMyCastFromApi(data);
+                    };
+                };
             },
             'error': function() {
                 alert('error');
@@ -70,25 +78,18 @@ $(document).ready(function(){
         });
     };
 
-    // function tmdbApiCallGenre (query) {
-    //     // vado ad effettuare la chiamata ajax:
-    //     $.ajax({
-    //         'url': apiUrlBase + '/genre/tv/list',
-    //         'data': {
-    //             'api_key': apiKey,
-    //             // sostituisco nel query il value dell'input:
-    //             'query': query,
-    //             'language': 'it-IT'
-    //         },
-    //         'method': 'GET',
-    //         'success': function (data) {
-    //             getMyInfosFromApi(data);
-    //         },
-    //         'error': function() {
-    //             alert('error');
-    //         }
-    //     });
-    // };
+
+
+    // funzione repuerare il cast
+    function getMyCastFromApi (array) {
+        var subject = array.cast;
+        for (var i = 0; i < subject.length; i++) {
+            var subjectI = subject[i]
+            var nameSubject = subjectI.name;
+
+            console.log(nameSubject);
+        };
+    };
 
     // creo una funzione che mi permetta di generalizzare la ricerca:
     function getMyInfosFromApi (array) {
@@ -96,10 +97,16 @@ $(document).ready(function(){
         for (var i = 0; i < subject.length; i++) {
             var subjcetI = subject[i]
             // vado a vedere se esiste la proprietà title, se non esiste, vuol dire che è una serie, e quindi cambia la dot notation
+            // mi definisco l'id prima altrimenti la condizione successiva non avrebbe senso:
+            var idSubject = subject[i].id;
+            // ho definito l'endPoint della chiamata ajax per il cast, perchè solo all'interno di cquesta funzione avevo la variabile con l'id del soggetto:
             if (subjcetI.hasOwnProperty('title')) {
                 var titleSubject = subject[i].title;
+                var endPointCast = 'movie/' + idSubject + '/credits';
+
             } else {
                 var titleSubject = subject[i].name;
+                var endPointCast = 'tv/' + idSubject + '/credits';
             }
 
             if (subjcetI.hasOwnProperty('original_title')) {
@@ -110,18 +117,17 @@ $(document).ready(function(){
 
             var languegeSubject = subject[i].original_language;
             var voteSubject = subject[i].vote_average;
-
-
+            // controllo sulla presenza o meno delle img nell'api, così da mettere una 404 nel caso non siano disponibili:
             if (subject[i].poster_path == null) {
-                console.log('trovato null');
                 var linkImg = "img/err.jpg";
 
             } else {
                 var posterSubject = subject[i].poster_path;
                 var linkImg = apiUrlImg + 'w342' + posterSubject;
             }
-
+            // mi recupero l'overview
             var overviewSubject = subject[i].overview;
+
             // creo il template per le variabili di handlebars:
             var templateVariables = {
                 posterImg: linkImg,
@@ -129,12 +135,16 @@ $(document).ready(function(){
                 originalTitle: originalTitleSubject,
                 language: flagLanguage(languegeSubject),
                 vote: starVote(voteSubject),
-                overview: overviewSubject
+                overview: overviewSubject,
+                id: idSubject
             }
 
             // infine faccio append:
             var htmlFilm = template(templateVariables);
             $('.container').append(htmlFilm);
+            // vado a fare la seconda chiamata ajax all'interno della ricerca della prima, questo perchè altrimenti non sarei in grado di utilizzare la variabile endpoint:
+            // il problema però sta nella gestione delle chiamate
+            tmdbApiCall ('', endPointCast);
         }
     };
 
@@ -222,6 +232,3 @@ $(document).ready(function(){
     });
 
 });
-
-
-// '<img src="https://image.spreadshirtmedia.net/image-server/v1/mp/products/T812A231MPA3811PT17X0Y195D138709625FS12425Cx000000/views/1,width=550,height=550,appearanceId=231,backgroundColor=F2F2F2,modelId=1111,crop=list,version=1564652308,modelImageVersion=1564481428/regalo-nerd-errore-404-img-not-found-divertente-maglietta-premium-uomo.jpg" alt="JA">'
