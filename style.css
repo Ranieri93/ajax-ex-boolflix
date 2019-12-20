@@ -10,6 +10,10 @@
     clear: both;
 }
 
+.hidden {
+	display: none;
+}
+
 /*  inizio header */
 
 header {
@@ -90,11 +94,6 @@ ul {
 ul.active {
 	display: block;
 }
-
-
-
-
-
 
 .fa-star {
 	color: #e3af14;

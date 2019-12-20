@@ -48,12 +48,11 @@ $(document).ready(function(){
     };
 
 
-
-    ///movie/{movie_id}/credits
     function tmdbApiCall (query, endPoint) {
 
         var dataAjax = {api_key:apiKey}
-
+        // avendo scritto una chiamata ajax sola, vado a definirmi l'endpoint che mi reindirizza sul'url giusto.
+        // pongo questa condizione perchè così nel caso in cui venga soddisfatta l'if al data vengano inserite informazioni aggiuntive:
         if (endPoint.includes('search')) {
             dataAjax.query = query;
             dataAjax.language = 'it-IT';
@@ -64,13 +63,14 @@ $(document).ready(function(){
             'data': dataAjax,
             'method': 'GET',
             'success': function (data) {
-                if (data.total_results > 0) {
-                    if (endPoint.includes('search')) {
+                if (endPoint.includes('search')) {
+                    if (data.total_results > 0) {
                         getMyInfosFromApi(data);
-                    } else {
-                        getMyCastFromApi(data);
-                    };
-                };
+                    }
+                } else {
+                    getMyCastFromApi(data);
+                }
+                console.log(data);
             },
             'error': function() {
                 alert('error');
@@ -78,17 +78,23 @@ $(document).ready(function(){
         });
     };
 
-
-
-    // funzione repuerare il cast
+    //funzione repuerare il cast
     function getMyCastFromApi (array) {
-        var subject = array.cast;
-        for (var i = 0; i < subject.length; i++) {
-            var subjectI = subject[i]
+        // recupero l'id:
+        var idSubject = array.id;
+        // scorro l'array col for per recuperarmi tutti i nomi:
+        var castSubject = array.cast;
+        // dato che devo concatenare delle stringhe mi inizializzo una variabile vuota:
+        var listacast = '';
+        for (var i = 0; i < castSubject.length; i++) {
+            var subjectI = castSubject[i]
             var nameSubject = subjectI.name;
-
-            console.log(nameSubject);
+            if (i < 5) {
+                listacast += nameSubject + ', ';
+            }
         };
+
+        $('.card-film[data-id="' + idSubject + '"]').find('.cast').text(listacast)
     };
 
     // creo una funzione che mi permetta di generalizzare la ricerca:
@@ -126,17 +132,23 @@ $(document).ready(function(){
                 var linkImg = apiUrlImg + 'w342' + posterSubject;
             }
             // mi recupero l'overview
+
+            if (overviewSubject == '') {
+                var classe = 'hidden';
+            }
+
             var overviewSubject = subject[i].overview;
 
             // creo il template per le variabili di handlebars:
             var templateVariables = {
+                id: idSubject,
                 posterImg: linkImg,
                 title: titleSubject,
                 originalTitle: originalTitleSubject,
                 language: flagLanguage(languegeSubject),
                 vote: starVote(voteSubject),
                 overview: overviewSubject,
-                id: idSubject
+                overviewClass: classe
             }
 
             // infine faccio append:
