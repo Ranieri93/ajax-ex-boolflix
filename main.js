@@ -27,8 +27,13 @@ $(document).ready(function(){
     })
 
     // richiamo la funzione di handlebars:
-    var source   = $("#film-template").html();
+    var sources  = $("#film-template").html();
+    var templates = Handlebars.compile(sources);
+
+    //secondo Handlebars selcet
+    var source   = $("#select-template").html();
     var template = Handlebars.compile(source);
+
 
     // definisco una funzione per la chiamata API
     function newCall () {
@@ -41,7 +46,6 @@ $(document).ready(function(){
             $('.container').empty();
             tmdbApiCall(inputValue,'search/tv');
             tmdbApiCall(inputValue,'search/movie');
-            // tmdbApiCall(inputValue,'find','movie');
         };
         // mi resetto il value per far scomparire il teso una volta cliccato invio:
         var inputValue = $('#searchInput').val('');
@@ -50,7 +54,7 @@ $(document).ready(function(){
 
     function tmdbApiCall (query, endPoint) {
 
-        var dataAjax = {api_key:apiKey}
+        var dataAjax = {api_key: apiKey}
         // avendo scritto una chiamata ajax sola, vado a definirmi l'endpoint che mi reindirizza sul'url giusto.
         // pongo questa condizione perchè così nel caso in cui venga soddisfatta l'if al data vengano inserite informazioni aggiuntive:
         if (endPoint.includes('search')) {
@@ -67,10 +71,12 @@ $(document).ready(function(){
                     if (data.total_results > 0) {
                         getMyInfosFromApi(data);
                     }
-                } else {
+                } else if (endPoint.includes('credits')) {
                     getMyCastFromApi(data);
+                } else {
+                    getMyGenresFromApi(data);
                 }
-                console.log(data);
+                // console.log(data);
             },
             'error': function() {
                 alert('error');
@@ -90,12 +96,39 @@ $(document).ready(function(){
             var subjectI = castSubject[i]
             var nameSubject = subjectI.name;
             if (i < 5) {
-                listacast += nameSubject + ', ';
+                listacast += nameSubject  + ', ' ;
             }
         };
 
-        $('.card-film[data-id="' + idSubject + '"]').find('.cast').text(listacast)
+        $('.card-film[data-id="' + idSubject + '"]').find('.cast').text('Cast: ' + listacast)
     };
+
+    // funzione per recuperare il genere
+
+    function getMyGenresFromApi(array) {
+        var subject = array.genres;
+        for (var i = 0; i < subject.length; i++) {
+
+            var idGenres = subject[i].id;
+            var nameGenres = subject[i].name;
+
+            console.log(idGenres);
+            console.log(nameGenres);
+
+            // creo il template per le variabili di handlebars:
+            var templateVariabili = {
+                genres: nameGenres,
+                idGenre: idGenres
+            }
+
+            // infine faccio append:
+            var htmlGenres = template(templateVariabili);
+            $('#pickGenre').append(htmlGenres);
+        }
+
+
+
+    }
 
     // creo una funzione che mi permetta di generalizzare la ricerca:
     function getMyInfosFromApi (array) {
@@ -105,14 +138,16 @@ $(document).ready(function(){
             // vado a vedere se esiste la proprietà title, se non esiste, vuol dire che è una serie, e quindi cambia la dot notation
             // mi definisco l'id prima altrimenti la condizione successiva non avrebbe senso:
             var idSubject = subject[i].id;
-            // ho definito l'endPoint della chiamata ajax per il cast, perchè solo all'interno di cquesta funzione avevo la variabile con l'id del soggetto:
+            // ho definito l'endPoint della chiamata ajax per il cast, perchè solo all'interno di questa funzione avevo la variabile con l'id del soggetto:
             if (subjcetI.hasOwnProperty('title')) {
                 var titleSubject = subject[i].title;
                 var endPointCast = 'movie/' + idSubject + '/credits';
+                var endPointGenres = 'genre/movie/list';
 
             } else {
                 var titleSubject = subject[i].name;
                 var endPointCast = 'tv/' + idSubject + '/credits';
+                var endPointGenres = 'genre/tv/list';
             }
 
             if (subjcetI.hasOwnProperty('original_title')) {
@@ -139,6 +174,8 @@ $(document).ready(function(){
 
             var overviewSubject = subject[i].overview;
 
+            var idGenresSubject = subject[i].genre_ids;
+
             // creo il template per le variabili di handlebars:
             var templateVariables = {
                 id: idSubject,
@@ -148,7 +185,8 @@ $(document).ready(function(){
                 language: flagLanguage(languegeSubject),
                 vote: starVote(voteSubject),
                 overview: overviewSubject,
-                overviewClass: classe
+                overviewClass: classe,
+                genresId: idGenresSubject
             }
 
             // infine faccio append:
@@ -157,6 +195,9 @@ $(document).ready(function(){
             // vado a fare la seconda chiamata ajax all'interno della ricerca della prima, questo perchè altrimenti non sarei in grado di utilizzare la variabile endpoint:
             // il problema però sta nella gestione delle chiamate
             tmdbApiCall ('', endPointCast);
+
+            tmdbApiCall ('', endPointGenres);
+
         }
     };
 
@@ -242,5 +283,15 @@ $(document).ready(function(){
         selectedPosterCard.removeClass('hidden')
         selectedTextCard.removeClass('active')
     });
+
+
+    //Creare una lista di generi richiedendo quelli disponibili all'API e creare dei filtri con i generi tv e movie per mostrare/nascondere le schede ottenute con la ricerca.
+
+    //trovare nell'api DOVE sono ubicati i genere
+    // ci sono due diverse destinazioni per i generi dei film e delle serie:
+    // Movies: /genre/movie/list
+    // TV: /genre/tv/list
+    // capire come estrapolarli
+    // dove inserirli
 
 });

@@ -16,33 +16,38 @@
 				<h1>boolflix</h1>
 			</div>
 			<div class="righ-side-header">
+				<select id="pickGenre">
+				</select>
 				<input id="searchInput" placeholder="Cerca qui!" name="search">
 				<button id="searchButton" type="button" name="button"> Clicca qui!</button>
 			</div>
-			<!-- <select id="pickGenre">
-				<option value=""> Scegli un genere</option>
-				<option value="pop"> Pop </option>
-				<option value="rock"> Rock </option>
-				<option value="jazz"> Jazz </option>
-				<option value="metal"> Metal </option>
-			</select> -->
+
 		</header>
 		<main>
 			<div class="container"></div>
 		</main>
+		<div class="">
+			<script id="film-template" type="text/x-handlebars-template">
+				<div class="card-film" data-id="{{ id }}" data-gen-id="{{ genresId }}">
+					<img id="posterImg"  src="{{{ posterImg }}}" alt="Locandina {{ originalTitle }}">
+					<ul>
+						<li>Titolo: {{ title }} </li>
+						<li>Titolo Originale: {{ originalTitle }} </li>
+						<li>Lingua: {{{ language }}} </li>
+						<li>Vote: {{{ vote }}} </li>
+						<li class="{{ overviewClass }}"> Overview: {{ overview }}</li>
+						<li><span class="cast"></span> </li>
 
-		<script id="film-template" type="text/x-handlebars-template">
-			<div class="card-film" data-id="{{ id }}">
-				<img id="posterImg"  src="{{{ posterImg }}}" alt="Locandina {{ originalTitle }}">
-				<ul>
-					<li>Titolo: {{ title }} </li>
-					<li>Titolo Originale: {{ originalTitle }} </li>
-					<li>Lingua: {{{ language }}} </li>
-					<li>Vote: {{{ vote }}} </li>
-					<li class="{{ overviewClass }}"> Overview: {{ overview }}</li>
-					<li>Cast: <span class="cast"></span> </li>
-				</ul>
-			</div>
-		</script>
+					</ul>
+				</div>
+			</script>
+		</div>
+		<div class="">
+			<script id="select-template" type="text/x-handlebars-template">
+				<option value="{{ idGenre }}"> {{ genres }} </option>
+			</script>
+		</div>
+
+
 	</body>
 </html>
